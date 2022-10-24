@@ -1,8 +1,19 @@
 <template>
   <Tree
     v-model:nodes="data"
-    :use-checkbox="true"
-  />
+    row-hover-background=""
+  >
+    <template #label="{ label }">
+      <span v-if="label === 'Animal'">🐶</span>
+      <span v-if="label === 'People'">👤</span>
+      {{ label }}
+    </template>
+    <template #afterLine="{ id, node }">
+      <div style="margin-left: 10px;">
+        <button>edit id: {{ id }}  {{ node.level }}</button>
+      </div>
+    </template>
+  </Tree>
 </template>
 
 <script>

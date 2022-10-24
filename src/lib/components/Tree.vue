@@ -43,6 +43,16 @@
           <template v-if="useRowDelete" #deleteIcon>
             <slot name="deleteIcon" />
           </template>
+          <template #label="{ node: slotNode }">
+            <slot :label="slotNode.label" :node="slotNode" name="label" />
+          </template>
+          <template #afterLine="{ node: slotNode }">
+            <slot
+              :id="slotNode.id"
+              :node="slotNode"
+              name="afterLine"
+            />
+          </template>
           <template
             v-if="showChildCount"
             #childCount="{ count, checkedCount, childs }"
