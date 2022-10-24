@@ -7,62 +7,68 @@
       '--row-hover-background': rowHoverBackground,
     }"
   >
-    <div
-      class="tree-row-item"
-      @click.stop="handleClick(node)"
-    >
-      <div v-if="useIcon" class="tree-row-item-icon-wrapper">
-        <template v-if="childCount">
-          <template v-if="!node.expanded">
-            <slot name="iconActive">
-              <arrow-right />
-            </slot>
+    <div class="tree-row-item">
+      <div class="tree-row-item-wrapper" @click.stop="handleClick(node)">
+        <div v-if="useIcon" class="tree-row-item-icon-wrapper">
+          <template v-if="childCount">
+            <template v-if="!node.expanded">
+              <slot name="iconActive">
+                <arrow-right />
+              </slot>
+            </template>
+            <template v-else>
+              <slot name="iconInactive">
+                <arrow-down />
+              </slot>
+            </template>
           </template>
-          <template v-else>
-            <slot name="iconInactive">
-              <arrow-down />
+        </div>
+        <slot
+          :id="node.id"
+          name="checkbox"
+          :node="node"
+          :checked="node.checked"
+          :indeterminate="node.indeterminate"
+        >
+          <input
+            v-if="useCheckbox"
+            v-model="node.checked"
+            type="checkbox"
+            :checked="node.checked"
+            :indeterminate="node.indeterminate"
+            @click.stop="onToggleCheckbox(node)"
+          />
+        </slot>
+        <slot name="label" :node="node" :label="node.label">
+          <span class="tree-row-txt">
+            {{ node.label }}
+          </span>
+        </slot>
+        <template v-if="childCount && showChildCount">
+          <slot
+            name="childCount"
+            :count="childCount"
+            :checkedCount="checkedChildCount"
+            :childs="node.nodes"
+          >
+            <span class="child-count">
+              {{ childCount }}
+            </span>
+          </slot>
+        </template>
+        <template v-if="!node.undeletable && useRowDelete">
+          <div class="delete-icon" @click.stop="removedRow(node)">
+            <slot name="deleteIcon">
+              <delete-icon />
             </slot>
-          </template>
+          </div>
         </template>
       </div>
       <slot
         :id="node.id"
-        name="checkbox"
+        name="afterLine"
         :node="node"
-        :checked="node.checked"
-        :indeterminate="node.indeterminate"
-      >
-        <input
-          v-if="useCheckbox"
-          v-model="node.checked"
-          type="checkbox"
-          :checked="node.checked"
-          :indeterminate="node.indeterminate"
-          @click.stop="onToggleCheckbox(node)"
-        />
-      </slot>
-      <span class="tree-row-txt">
-        {{ node.label }}
-      </span>
-      <template v-if="childCount && showChildCount">
-        <slot
-          name="childCount"
-          :count="childCount"
-          :checkedCount="checkedChildCount"
-          :childs="node.nodes"
-        >
-          <span class="child-count">
-            {{ childCount }}
-          </span>
-        </slot>
-      </template>
-      <template v-if="!node.undeletable && useRowDelete">
-        <div class="delete-icon" @click.stop="removedRow(node)">
-          <slot name="deleteIcon">
-            <delete-icon />
-          </slot>
-        </div>
-      </template>
+      />
     </div>
     <ul
       v-if="node.expanded"
@@ -116,6 +122,16 @@
             <slot name="deleteIcon">
               <delete-icon />
             </slot>
+          </template>
+          <template #label="{ node: slotNode }">
+            <slot :label="slotNode.label" :node="slotNode" name="label" />
+          </template>
+          <template #afterLine="{ node: slotNode }">
+            <slot
+              :id="slotNode.id"
+              :node="slotNode"
+              name="afterLine"
+            />
           </template>
           <template #checkbox="{ node: slotNode, checked, indeterminate }">
             <slot

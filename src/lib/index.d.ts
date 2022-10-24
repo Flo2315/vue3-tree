@@ -29,7 +29,7 @@ export interface TreeNode {
    */
   hidden?: boolean;
   /**
-   * Determines whether the node is undeletable when `useRowDelete` is `true`.   
+   * Determines whether the node is undeletable when `useRowDelete` is `true`.
    */
   undeletable?: boolean;
 }
@@ -116,8 +116,10 @@ declare const Tree: new () => {
   $props: AllowedComponentProps & ComponentCustomProps & VNodeProps & TreeProps;
   $slots: {
     default: () => VNode[],
+    afterLine: () => VNode[],
     iconActive: () => VNode[],
     iconInactive: () => VNode[],
+    label: () => VNode[],
     deleteIcon: () => VNode[],
     checkbox: (arg: CheckboxSlotScope) => VNode[],
     childCount: (arg: ChildCountSlotScope) => VNode[],
